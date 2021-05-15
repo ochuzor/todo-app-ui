@@ -17,7 +17,7 @@ const MAX_TEXT_LEN = 50;
 
 const getValidTodoText = (input: string) => {
     const text = input.trim();
-    if (text.length < MIN_TEXT_LEN) {
+    if (text.length < MIN_TEXT_LEN || text.length > MAX_TEXT_LEN) {
         throw new Error(`Todo text must be between ${MIN_TEXT_LEN} and ${MAX_TEXT_LEN}`);
     }
 

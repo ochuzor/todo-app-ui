@@ -11,6 +11,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import { Link as RouterLink, useHistory } from 'react-router-dom';
 
+import { validatePassword, validateUserName } from '../utils';
 import { useAuth } from '../auth/use-auth';
 import Copyright from './Copyright';
 
@@ -33,21 +34,6 @@ const useStyles = makeStyles((theme) => ({
         margin: theme.spacing(3, 0, 2),
     },
 }));
-
-type ValidateText = (text: string) => string;
-
-const validateUserName: ValidateText = (userName: string) => {
-    const text = userName.trim().toLowerCase();
-    if (text.length < 3) throw new Error('Invalid Username');
-
-    return text;
-};
-
-const validatePassword: ValidateText = (password: string) => {
-    if (password.length < 6) throw new Error('Invalid Password');
-
-    return password;
-};
 
 export default function SignIn() {
     const classes = useStyles();

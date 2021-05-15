@@ -1,10 +1,7 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
-import TextField from '@material-ui/core/TextField';
-// import FormControlLabel from '@material-ui/core/FormControlLabel';
-// import Checkbox from '@material-ui/core/Checkbox';
 import Link from '@material-ui/core/Link';
 import Grid from '@material-ui/core/Grid';
 import Box from '@material-ui/core/Box';
@@ -12,8 +9,11 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
-import { Link as RouterLink } from 'react-router-dom';
+import { Link as RouterLink, useHistory } from 'react-router-dom';
 
+import { validatePassword, validateUserName } from '../utils';
+import { useAuth } from '../auth/use-auth';
+import { useTextField } from './use-text-field';
 import Copyright from './Copyright';
 
 const useStyles = makeStyles((theme) => ({
@@ -38,6 +38,34 @@ const useStyles = makeStyles((theme) => ({
 
 export default function SignUp() {
     const classes = useStyles();
+    const { registerUser, user } = useAuth();
+    const history = useHistory();
+
+    const [username, usernameField] = useTextField({type: 'text', label: 'username'});
+    const [password, passwordField] = useTextField({type: 'password', label: 'password'});
+    const [confirmPassword, confirmPasswordField] = useTextField({type: 'password', label: 'confirm password'});
+
+    useEffect(() => {
+        if (Boolean(user)) {
+            history.replace('/dashboard');
+        }
+    }, [user, history]);
+
+    const submit = async (event: React.FormEvent) => {
+        try {
+            event.preventDefault();
+            const u = validateUserName(username);
+            const p = validatePassword(password);
+
+            if (p !== confirmPassword) {
+                throw new Error('Password mismatch');
+            }
+            
+            await registerUser(u, p);
+        } catch (err) {
+            console.error(err);
+        }
+    };
 
     return (
         <Container component="main" maxWidth="xs">
@@ -49,67 +77,17 @@ export default function SignUp() {
                 <Typography component="h1" variant="h5">
                     Sign up
                 </Typography>
-                <form className={classes.form} noValidate>
+                <form onSubmit={submit} className={classes.form} noValidate>
                     <Grid container spacing={2}>
-                        {/* <Grid item xs={12} sm={6}>
-                            <TextField
-                                autoComplete="fname"
-                                name="firstName"
-                                variant="outlined"
-                                required
-                                fullWidth
-                                id="firstName"
-                                label="First Name"
-                                autoFocus
-                            />
-                        </Grid>
-                        <Grid item xs={12} sm={6}>
-                            <TextField
-                                variant="outlined"
-                                required
-                                fullWidth
-                                id="lastName"
-                                label="Last Name"
-                                name="lastName"
-                                autoComplete="lname"
-                            />
-                        </Grid> */}
                         <Grid item xs={12}>
-                            <TextField
-                                variant="outlined"
-                                required
-                                fullWidth
-                                label="username"
-                                name="email"
-                                autoComplete="email"
-                            />
+                            {usernameField}
                         </Grid>
                         <Grid item xs={12}>
-                            <TextField
-                                variant="outlined"
-                                required
-                                fullWidth
-                                label="Password"
-                                type="password"
-                                autoComplete="current-password"
-                            />
+                            {passwordField}
                         </Grid>
                         <Grid item xs={12}>
-                            <TextField
-                                variant="outlined"
-                                required
-                                fullWidth
-                                label="Confirm Password"
-                                type="password"
-                                autoComplete="current-password"
-                            />
+                            {confirmPasswordField}
                         </Grid>
-                        {/* <Grid item xs={12}>
-                            <FormControlLabel
-                                control={<Checkbox value="allowExtraEmails" color="primary" />}
-                                label="I want to receive inspiration, marketing promotions and updates via email."
-                            />
-                        </Grid> */}
                     </Grid>
                     <Button
                         type="submit"

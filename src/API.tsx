@@ -35,28 +35,22 @@ export const signOut = async (): Promise<void> => {
     setToken(undefined);
 };
 
-const fakeUsers: UserInfo[] = [
-    { username: 'john', id: 1 },
-    { username: 'jane', id: 2 },
-];
+export const signUp = async (username: string, password: string): Promise<UserInfo> => {
+    const url = `${API_URL}/auth/users/`;
+    const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+            'Content-type': 'application/json; charset=UTF-8', // Indicates the content
+        },
+        body: JSON.stringify({ username, password }),
+    });
 
-export const signUp = async (username: string, _password: string): Promise<UserInfo> => {
-    const existingUser = fakeUsers.find((u) => u.username === username);
-    if (existingUser) {
-        throw new Error('User already exists');
+    if (!response.ok) {
+        const msg = (await response.json()).non_field_errors[0]
+        throw new Error(msg);
     }
 
-    const user = {
-        username,
-        id:
-            Math.max.apply(
-                null,
-                fakeUsers.map((u) => u.id)
-            ) + 1,
-    };
-
-    fakeUsers.push(user);
-    return user;
+    return response.json();
 };
 
 export const getUserData = async (): Promise<UserInfo> => {

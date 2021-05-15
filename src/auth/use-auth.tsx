@@ -9,9 +9,13 @@ function useProvideAuth() {
 
     useEffect(() => {
         (async () => {
-            if (getToken()) {
-                const user = await API.getUserData();
-                setUser(user);
+            try {
+                if (getToken()) {
+                    const user = await API.getUserData();
+                    setUser(user);
+                }
+            } catch {
+                setToken(undefined);
             }
         })();
     }, []);
@@ -29,7 +33,8 @@ function useProvideAuth() {
     };
 
     const registerUser = async (username: string, password: string) => {
-        return API.signUp(username, password).then((user) => setUser(user));
+        await API.signUp(username, password);
+        await signin(username, password);
     };
 
     return {
