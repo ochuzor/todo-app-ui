@@ -6,6 +6,7 @@ import { makeStyles } from '@material-ui/core/styles';
 
 import type { TodoItemUI } from '../Types';
 import { useTodos } from '../todos/use-todos';
+import {useConfirmDialog} from './ConfirmDialog';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -23,13 +24,23 @@ export default function TodoRowActions({todo}: IProps) {
     const classes = useStyles();
     const { setTodoToEdit, deleteTodo, isLoading } = useTodos();
 
+    const {dialog, setOpen} = useConfirmDialog({
+        message: 'Are you sure you want to delete todo?',
+        onConfirm: (yes: boolean) => {
+            if (yes) {
+                deleteTodo(todo.id);
+            }
+
+            setOpen(false);
+        },
+    });
+
     const onTodoDelete = () => {
-        if (window.confirm('you sure you want to delete todo?')) {
-            deleteTodo(todo.id);
-        }
+        setOpen(true);
     };
 
     return (<div className={classes.root}>
+        {dialog}
         <IconButton
             color="primary"
             aria-label="edit"
