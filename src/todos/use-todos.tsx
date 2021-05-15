@@ -1,7 +1,7 @@
 import React, { useContext, createContext, useState, useEffect } from 'react';
 
 import { useAuth } from '../auth/use-auth';
-import type { Todo } from '../Types';
+import type { Todo, TodoEditData } from '../Types';
 import { API_URL } from '../config';
 import { getToken } from '../token-handler';
 
@@ -23,7 +23,7 @@ async function loadTodos(): Promise<Todo[]> {
     return (await resp.json()).results;
 }
 
-async function saveTodo(data: Partial<Todo>): Promise<Todo> {
+async function saveTodo(data: TodoEditData): Promise<Todo> {
     const url = data.id ? `${API_URL}/todos/${data.id}/` : `${API_URL}/todos/`;
     // these are the only fields one is allowed to updated/create from
     const { title, is_done } = data;
@@ -49,6 +49,7 @@ function useProvideTodos() {
     const { user } = useAuth();
     const [todos, setTodos] = useState<Todo[]>([]);
     const [isLoading, setLoading] = useState(false);
+    const [todoToEdit, setTodoToEdit] = useState<TodoEditData>();
 
     useEffect(() => {
         (async () => {
@@ -81,6 +82,8 @@ function useProvideTodos() {
         todos,
         isLoading,
         updateTodo,
+        todoToEdit,
+        setTodoToEdit,
     }
 }
 
