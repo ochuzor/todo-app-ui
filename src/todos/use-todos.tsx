@@ -66,12 +66,24 @@ function useProvideTodos() {
         })();
     }, [user]);
 
-    function updateTodo(todo: Todo) {
+    function updateTodo(todo: Pick<Todo, 'id' | 'title' | 'is_done'>) {
         (async () => {
             try {
                 setLoading(true);
                 const data = await saveTodo(todo);
                 setTodos(prev => prev.map(td => td.id === data.id ? data : td));
+            } finally {
+                setLoading(false);
+            }
+        })();
+    }
+
+    function createTodo(todo: Pick<Todo, 'title' | 'is_done'>) {
+        (async () => {
+            try {
+                setLoading(true);
+                const data = await saveTodo(todo);
+                setTodos(prev => [data].concat(prev));
             } finally {
                 setLoading(false);
             }
@@ -84,6 +96,7 @@ function useProvideTodos() {
         updateTodo,
         todoToEdit,
         setTodoToEdit,
+        createTodo,
     }
 }
 

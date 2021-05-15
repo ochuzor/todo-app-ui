@@ -8,6 +8,7 @@ import MenuAppBar from './Components/MenuAppBar';
 import Dashboard from './Components/Dashboard';
 import SignIn from './Components/SignIn';
 import SignUp from './Components/SignUp';
+import EditTodoDialog from './Components/EditTodoDialog';
 
 function Home() {
     return <h3>Home</h3>;
@@ -28,6 +29,8 @@ function App() {
                             <Dashboard />
                         </PrivateRoute>
                     </Switch>
+
+                    <EditTodoDialog />
                 </Router>
             </ProvideTodos>
         </ProvideAuth>
