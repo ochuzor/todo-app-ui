@@ -5,10 +5,11 @@ import Paper from '@material-ui/core/Paper';
 import { DataGrid, GridColDef, GridValueGetterParams } from '@material-ui/data-grid';
 import { makeStyles } from '@material-ui/core/styles';
 
-import type { Todo } from '../Types';
+import type { Todo, TodoItemUI } from '../Types';
 import { useTodos } from '../todos/use-todos';
 import TodoStatus from './TodoStatus';
 import AddTodoBtn from './AddTodoBtn';
+import TodoRowActions from './TodoRowActions';
 
 const useStyles = makeStyles((theme) => ({
     paper: {
@@ -40,7 +41,12 @@ const columns: GridColDef[] = [
         type: 'dateTime',
         width: 200,
     },
-    // todo actions field
+    {
+        field: 'Actions',
+        headerName: 'Actions',
+        width: 150,
+        renderCell: (params: GridValueGetterParams) => <TodoRowActions todo={params.row as TodoItemUI} />
+    },
 ];
 
 export default function Dashboard() {

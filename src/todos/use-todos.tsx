@@ -45,6 +45,23 @@ async function saveTodo(data: TodoEditData): Promise<Todo> {
     return await resp.json();
 }
 
+async function apiDeleteTodo(id: Todo['id']): Promise<void> {
+    const url = `${API_URL}/todos/${id}/`;
+    const token = getToken();
+
+    const resp = await fetch(url, {
+        method: 'DELETE',
+        headers: {
+            'Content-type': 'application/json; charset=UTF-8',
+            'Authorization': `Token ${token}`
+        },
+    });
+
+    if (!resp.ok) {
+        throw new Error(await resp.json());
+    }
+}
+
 function useProvideTodos() {
     const { user } = useAuth();
     const [todos, setTodos] = useState<Todo[]>([]);
@@ -90,6 +107,18 @@ function useProvideTodos() {
         })();
     }
 
+    function deleteTodo(id: Todo['id']) {
+        (async () => {
+            try {
+                setLoading(true);
+                await apiDeleteTodo(id);
+                setTodos(prev => prev.filter(td => td.id !== id));
+            } finally {
+                setLoading(false);
+            }
+        })();
+    }
+
     return {
         todos,
         isLoading,
@@ -97,6 +126,7 @@ function useProvideTodos() {
         todoToEdit,
         setTodoToEdit,
         createTodo,
+        deleteTodo,
     }
 }
 

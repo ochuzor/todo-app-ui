@@ -11,4 +11,6 @@ export type Todo = {
     created_at: string;
 };
 
-export type TodoEditData = Partial<Pick <Todo, 'id' | 'title' | 'is_done'>>;
+export type TodoItemUI = Pick <Todo, 'id' | 'title' | 'is_done'>;
+
+export type TodoEditData = Partial<TodoItemUI>;
