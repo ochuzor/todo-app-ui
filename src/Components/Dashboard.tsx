@@ -5,7 +5,9 @@ import Paper from '@material-ui/core/Paper';
 import { DataGrid, GridColDef, GridValueGetterParams } from '@material-ui/data-grid';
 import { makeStyles } from '@material-ui/core/styles';
 
+import type { Todo } from '../Types';
 import { useTodos } from '../todos/use-todos';
+import TodoStatus from './TodoStatus';
 
 const useStyles = makeStyles((theme) => ({
     paper: {
@@ -28,19 +30,25 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const columns: GridColDef[] = [
-    { field: 'id', headerName: 'ID', width: 70, sortable: false },
-    { field: 'title', headerName: 'Title', width: 300 },
+    {
+        field: 'is_done', 
+        headerName: 'Status', 
+        width: 90,
+        renderCell: (params: GridValueGetterParams) => <TodoStatus todo={params.row as Todo} />
+    },
+    { field: 'title', headerName: 'Title', width: 350 },
     {
         field: 'created_at',
         headerName: 'Created',
         type: 'dateTime',
-        width: 130,
+        width: 200,
     },
+    // todo actions field
 ];
 
 export default function Dashboard() {
     const classes = useStyles();
-    const { todos } = useTodos();
+    const { todos, isLoading } = useTodos();
 
     return (
         <Container component="main" maxWidth="md">
@@ -57,6 +65,7 @@ export default function Dashboard() {
                             disableColumnMenu
                             disableSelectionOnClick
                             disableColumnSelector
+                            loading={isLoading}
                         />
                     </div>
                 </Paper>

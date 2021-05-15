@@ -26,19 +26,26 @@ async function loadTodos(): Promise<Todo[]> {
 function useProvideTodos() {
     const { user } = useAuth();
     const [todos, setTodos] = useState<Todo[]>([]);
+    const [isLoading, setLoading] = useState(false);
 
     useEffect(() => {
         (async () => {
-            if (Boolean(user)) {
-                setTodos(await loadTodos());
-            } else {
-                setTodos([]);
+            try {
+                setLoading(true);
+                if (Boolean(user)) {
+                    setTodos(await loadTodos());
+                } else {
+                    setTodos([]);
+                }
+            } finally {
+                setLoading(false);
             }
         })();
     }, [user]);
 
     return {
         todos,
+        isLoading,
     }
 }
 

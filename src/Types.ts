@@ -6,7 +6,7 @@ export type UserInfo = {
 export type Todo = {
     id: number;
     title: string;
-    is_done: string;
+    is_done: boolean;
     added_by: string;
     created_at: string;
 }
