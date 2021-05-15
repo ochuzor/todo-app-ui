@@ -10,6 +10,7 @@ import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import { Link as RouterLink, useHistory } from 'react-router-dom';
+import { useSnackbar } from 'notistack';
 
 import { validatePassword, validateUserName } from '../utils';
 import { useAuth } from '../auth/use-auth';
@@ -38,6 +39,7 @@ const useStyles = makeStyles((theme) => ({
 export default function SignIn() {
     const classes = useStyles();
     const history = useHistory();
+    const { enqueueSnackbar } = useSnackbar();
     const { signin, user } = useAuth();
 
     const [userData, setUserData] = useState({ username: '', password: '' });
@@ -56,7 +58,9 @@ export default function SignIn() {
             
             await signin(username, password);
         } catch (err) {
-            console.error(err);
+            enqueueSnackbar(err.message, { 
+                variant: 'error',
+            });
         }
     };
 

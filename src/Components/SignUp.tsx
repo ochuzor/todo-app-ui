@@ -10,6 +10,7 @@ import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import { Link as RouterLink, useHistory } from 'react-router-dom';
+import { useSnackbar } from 'notistack';
 
 import { validatePassword, validateUserName } from '../utils';
 import { useAuth } from '../auth/use-auth';
@@ -38,6 +39,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function SignUp() {
     const classes = useStyles();
+    const { enqueueSnackbar } = useSnackbar();
     const { registerUser, user } = useAuth();
     const history = useHistory();
 
@@ -63,7 +65,9 @@ export default function SignUp() {
             
             await registerUser(u, p);
         } catch (err) {
-            console.error(err);
+            enqueueSnackbar(err.message, { 
+                variant: 'error',
+            });
         }
     };
 

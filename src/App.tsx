@@ -1,5 +1,6 @@
 import React from 'react';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
+import { SnackbarProvider } from 'notistack';
 
 import { ProvideAuth } from './auth/use-auth';
 import { ProvideTodos } from './todos/use-todos';
@@ -16,24 +17,26 @@ function Home() {
 
 function App() {
     return (
-        <ProvideAuth>
-            <ProvideTodos>
-                <Router>
-                    <MenuAppBar />
+        <SnackbarProvider  maxSnack={3}>
+            <ProvideAuth>
+                <ProvideTodos>
+                    <Router>
+                        <MenuAppBar />
 
-                    <Switch>
-                        <Route exact path="/" component={Home} />
-                        <Route path="/signin" component={SignIn} />
-                        <Route path="/signup" component={SignUp} />
-                        <PrivateRoute path="/dashboard">
-                            <Dashboard />
-                        </PrivateRoute>
-                    </Switch>
+                        <Switch>
+                            <Route exact path="/" component={Home} />
+                            <Route path="/signin" component={SignIn} />
+                            <Route path="/signup" component={SignUp} />
+                            <PrivateRoute path="/dashboard">
+                                <Dashboard />
+                            </PrivateRoute>
+                        </Switch>
 
-                    <EditTodoDialog />
-                </Router>
-            </ProvideTodos>
-        </ProvideAuth>
+                        <EditTodoDialog />
+                    </Router>
+                </ProvideTodos>
+            </ProvideAuth>
+        </SnackbarProvider>
     );
 }
 

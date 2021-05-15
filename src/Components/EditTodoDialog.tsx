@@ -9,6 +9,7 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Switch from '@material-ui/core/Switch';
+import { useSnackbar } from 'notistack';
 
 import { useTodos } from '../todos/use-todos';
 
@@ -25,6 +26,7 @@ const getValidTodoText = (input: string) => {
 };
 
 export default function EditTodoDialog() {
+    const { enqueueSnackbar } = useSnackbar();
     const { todoToEdit, setTodoToEdit, createTodo, updateTodo, isLoading } = useTodos();
 
     const [text, setText] = useState('');
@@ -52,7 +54,9 @@ export default function EditTodoDialog() {
 
             setTodoToEdit(undefined);
         } catch (err) {
-            console.error(err.message);
+            enqueueSnackbar(err.message, { 
+                variant: 'error',
+            });
         }
     };
 
