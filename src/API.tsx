@@ -2,6 +2,12 @@ import type { Todo, TodoEditData, UserInfo } from './Types';
 import { API_URL } from './config';
 import { getToken, setToken } from './token-handler';
 
+const getAuthErrorMessage = (data: any) => {
+    const errors = data.username || data.password || data.non_field_errors;
+
+    return errors[0] || 'Unknown Error';
+};
+
 export const signIn = async (username: string, password: string): Promise<string> => {
     const url = `${API_URL}/auth/token/login/`;
     const response = await fetch(url, {
@@ -13,7 +19,7 @@ export const signIn = async (username: string, password: string): Promise<string
     });
 
     if (!response.ok) {
-        const msg = (await response.json()).non_field_errors[0]
+        const msg = getAuthErrorMessage(await response.json());
         throw new Error(msg);
     }
 
@@ -46,7 +52,7 @@ export const signUp = async (username: string, password: string): Promise<UserIn
     });
 
     if (!response.ok) {
-        const msg = (await response.json()).non_field_errors[0]
+        const msg = getAuthErrorMessage(await response.json());
         throw new Error(msg);
     }
 
